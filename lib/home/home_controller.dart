@@ -23,6 +23,8 @@ class HomeController {
     user = await repository.getUser();
     if (user != null) {
       state = HomeState.sucess;
+    } else {
+      state = HomeState.error;
     }
   }
 
@@ -32,6 +34,8 @@ class HomeController {
     quizzes = await repository.getQuizzes();
     if (user != null && quizzes != null) {
       state = HomeState.sucess;
+    } else {
+      state = HomeState.error;
     }
   }
 }
