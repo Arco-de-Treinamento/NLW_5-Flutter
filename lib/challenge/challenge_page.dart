@@ -3,13 +3,17 @@ import 'dart:html';
 import 'package:DevQuiz/challenge/challenge_controller.dart';
 import 'package:DevQuiz/home/widgets/next_button/next_button_widget.dart';
 import 'package:DevQuiz/home/widgets/question_indicator/question_indicator_widget.dart';
+import 'package:DevQuiz/result/resultError.dart';
+import 'package:DevQuiz/result/resultPage.dart';
 import 'package:DevQuiz/shared/models/question_model.dart';
 import 'package:DevQuiz/shared/widgets/quiz/quiz_widget.dart';
 import 'package:flutter/material.dart';
 
 class ChallengePage extends StatefulWidget {
   final List<QuestionModel> questions;
-  ChallengePage({Key? key, required this.questions}) : super(key: key);
+  final String title;
+  ChallengePage({Key? key, required this.title, required this.questions})
+      : super(key: key);
 
   @override
   _ChallengePageState createState() => _ChallengePageState();
@@ -33,6 +37,14 @@ class _ChallengePageState extends State<ChallengePage> {
         duration: Duration(milliseconds: 150),
         curve: Curves.linear,
       );
+  }
+
+  void onSelected(bool value) {
+    if (value) {
+      controller.qtdAnwserRight++;
+    }
+
+    nextPage();
   }
 
   @override
@@ -68,7 +80,7 @@ class _ChallengePageState extends State<ChallengePage> {
             .map(
               (e) => QuizWidget(
                 question: e,
-                onChange: nextPage,
+                onSelected: onSelected,
               ),
             )
             .toList(),
@@ -93,7 +105,34 @@ class _ChallengePageState extends State<ChallengePage> {
                             child: NextButtonWidget.green(
                           label: "Confirmar",
                           onTap: () {
-                            Navigator.pop(context);
+                            widget.questions
+                                .map(
+                                  (e) => QuizWidget(
+                                    question: e,
+                                    onSelected: onSelected,
+                                  ),
+                                )
+                                .toList();
+                            print(controller.qtdAnwserRight);
+                            if (controller.qtdAnwserRight == 0) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ResultError(
+                                          title: widget.title,
+                                        )),
+                              );
+                            } else {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ResultPage(
+                                          title: widget.title,
+                                          result: controller.qtdAnwserRight,
+                                          length: widget.questions.length,
+                                        )),
+                              );
+                            }
                           },
                         )),
                     ],

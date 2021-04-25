@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class AwnserWidget extends StatelessWidget {
   final AwnserModel awnser;
-  final VoidCallback onTap;
+  final ValueChanged<bool> onTap;
   final bool isSelected;
   final bool disabled;
 
@@ -40,24 +40,28 @@ class AwnserWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: IgnorePointer(
         ignoring: disabled,
-          child: GestureDetector(
-          onTap: onTap,
-            child: Container(
+        child: GestureDetector(
+          onTap: () {
+            onTap(awnser.isRight);
+          },
+          child: Container(
             padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
                 color: isSelected ? _selectedBorderCardRight : AppColors.white,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.fromBorderSide(BorderSide(
-                    color:
-                        isSelected ? _selectedBorderCardRight : AppColors.border))),
+                    color: isSelected
+                        ? _selectedBorderCardRight
+                        : AppColors.border))),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Text(
                     awnser.title,
-                    style:
-                        isSelected ? _selectedTextStyleRight : AppTextStyles.body,
+                    style: isSelected
+                        ? _selectedTextStyleRight
+                        : AppTextStyles.body,
                   ),
                 ),
                 Container(
